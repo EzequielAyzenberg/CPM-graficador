@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Archivo">
+            <items>
+              <MenuItem fx:id="menuBtnImportar" mnemonicParsing="false" text="Importar datos de CPM (.xls)..." />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Guardar Proyecto..." />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Exportar imagen CPM..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Salir" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Acción">
+            <items>
+              <MenuItem disable="true" mnemonicParsing="false" text="Generar CPM" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Opciones">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Tamaño del lienzo" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Ayuda">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Acerca de CPM-Graficador..." />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+      <SplitPane dividerPositions="0.32441471571906355" layoutY="25.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+         <items>
+            <TableView fx:id="tabla" prefHeight="373.0" prefWidth="150.0">
+              <columns>
+                <TableColumn fx:id="columnaNro" prefWidth="34.0" text="#" />
+                <TableColumn fx:id="columnaDuracion" prefWidth="67.0" text="Duracion" />
+                  <TableColumn fx:id="columnaPrecedencias" prefWidth="90.0" text="Precedencias" />
+              </columns>
+            </TableView>
+            <ScrollPane pannable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+              </content>
+            </ScrollPane>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
