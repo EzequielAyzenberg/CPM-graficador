@@ -1,22 +1,21 @@
 package ar.utn.thegrid.cpm;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-public class Main extends Application{
+public class MostrarModeloConUnaTarea extends Application{
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	private CPMController controller;
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		CPMController controller = new CPMController();
+		this.controller = new CPMController();
 		controller.start(primaryStage);
 		primaryStage.show();
+		controller.agregarTarea(new Tarea(0, 1.0, ""));
 	}
 }

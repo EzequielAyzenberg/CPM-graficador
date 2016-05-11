@@ -1,0 +1,14 @@
+.nodo {
+	-fx-pref-width: 80px;
+	-fx-pref-height: 80px;
+	-fx-background-image: url(nodo.png);
+	-fx-alignment: center;
+}
+
+.nodo:hover{
+	-fx-cursor:hand;
+}
+
+.nodo hbox {
+	-fx-background-color: red;
+}
