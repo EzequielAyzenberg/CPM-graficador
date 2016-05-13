@@ -33,7 +33,7 @@ public class TareaDummy extends Tarea{
 		this.setPrecedencias(original.getId()+"");
 		int nroTareasDummy = original.getNroTareasDummy();
 		nroTareasDummy++;
-		this.setId(original.getId()+"-"+nroTareasDummy);
+		this.setId(original.getId()+"."+nroTareasDummy);
 		original.setNroTareasDummy(nroTareasDummy);
 	}
 

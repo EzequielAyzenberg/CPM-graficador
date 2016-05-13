@@ -69,6 +69,7 @@ public class Nodo {
 
 	public void setNumeroNodo(int numeroNodo) {
 		this.numeroNodo = numeroNodo;
+		lblNro.setText(numeroNodo+"");
 	}
 
 	public VBox getContenedor() {

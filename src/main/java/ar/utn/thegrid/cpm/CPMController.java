@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -95,7 +94,10 @@ public class CPMController {
 		Collection<Tarea> tareas = modelo.getTareas().values();
 		@SuppressWarnings("unchecked")
 		ArrayList<Nodo>[] posiciones = new ArrayList[nodos.size()];
-		for (int i=0;i<nodos.size();i++) posiciones[i] = new ArrayList<>();
+		for (int i=0;i<nodos.size();i++) {
+			posiciones[i] = new ArrayList<>();
+			nodos.get(i).setNumeroNodo(i+1);
+		}
 		nodos.forEach(n -> lienzo.getChildren().add(n.getContenedor()));
 		tareas.forEach(t -> lienzo.getChildren().add(t.getFlecha()));
 		disponerEnEsquema(nodoInicial,0,posiciones);
@@ -143,9 +145,7 @@ public class CPMController {
 	public void agregarTarea(Tarea tarea) {
 		try {
 			modelo.agregarTarea(tarea);
-//			lienzo.getChildren().add(tarea.getFlecha());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -17,7 +17,7 @@ import javafx.scene.shape.Line;
  */
 public class Tarea {
 	private String id;
-	private Double duracion;
+	private Double duracion = 0.0;
 	private String precedencias;
 	private Nodo nodoOrigen, nodoDestino;
 	private Line flecha = new Line();
@@ -53,7 +53,7 @@ public class Tarea {
 
 	public void setId(String id) {
 		this.id = id;
-		this.id_lbl.setText(id+"");
+		this.id_lbl.setText(id+"("+duracion+")");
 	}
 
 	public Nodo getNodoOrigen() {
@@ -66,10 +66,6 @@ public class Tarea {
 		this.nodoOrigen = nodo;
 		nodo.getTareasQueSalen().add(this);
 		nodo.actualizarDescripcion();
-//		flecha.startXProperty().unbind();
-//		flecha.startYProperty().unbind();
-//		flecha.startXProperty().bind(nodo.getContenedor().layoutXProperty().add(80));
-//		flecha.startYProperty().bind(nodo.getContenedor().layoutYProperty().add(40));
 	}
 
 	public Nodo getNodoDestino() {
@@ -82,10 +78,6 @@ public class Tarea {
 		this.nodoDestino = nodo;
 		nodo.getTareasQueArriban().add(this);
 		nodo.actualizarDescripcion();
-//		flecha.endXProperty().unbind();
-//		flecha.endYProperty().unbind();
-//		flecha.endXProperty().bind(nodo.getContenedor().layoutXProperty());
-//		flecha.endYProperty().bind(nodo.getContenedor().layoutYProperty().add(40));
 	}
 
 	public Line getFlecha() {
@@ -119,12 +111,12 @@ public class Tarea {
 		flecha.startYProperty().bind(startY);
 		flecha.endXProperty().bind(endX);
 		flecha.endYProperty().bind(endY);
-		startX.addListener((obs, o, n) -> id_lbl.setLayoutX(((double)n + endX.get())/2));
-		endX.addListener((obs, o, n) -> id_lbl.setLayoutX(((double)n + startX.get())/2));
-		startY.addListener((obs, o, n) -> id_lbl.setLayoutY(((double)n + endY.get())/2));
-		endY.addListener((obs, o, n) -> id_lbl.setLayoutY(((double)n + startY.get())/2));
-//		id_lbl.layoutXProperty().bind(startX.add(endX).divide(2));
-//		id_lbl.layoutYProperty().bind(startY.add(endY).divide(2));
+		startX.addListener((obs, o, n) -> id_lbl.setLayoutX(((double)n + endX.get())/2+10));
+		endX.addListener((obs, o, n) -> id_lbl.setLayoutX(((double)n + startX.get())/2+10));
+		startY.addListener((obs, o, n) -> id_lbl.setLayoutY(((double)n + endY.get())/2+10));
+		endY.addListener((obs, o, n) -> id_lbl.setLayoutY(((double)n + startY.get())/2+10));
+		id_lbl.setLayoutX((startX.get() + endX.get())/2);
+		id_lbl.setLayoutY((startY.get() + endY.get())/2);
 		lienzo.getChildren().add(id_lbl);
 	}
 }

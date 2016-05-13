@@ -70,7 +70,7 @@ public class ModeloCPM {
 				dummy.setNodoDestino(precedenteApoyo.getNodoDestino());
 				int nroTareasDummy = precedente.getNroTareasDummy();
 				nroTareasDummy++;
-				dummy.setId(precedente.getId()+"-"+nroTareasDummy);
+				dummy.setId(precedente.getId()+"."+nroTareasDummy);
 				precedente.setNroTareasDummy(nroTareasDummy);
 				tareas.put(dummy.getId(), dummy);
 			}
