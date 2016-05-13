@@ -4,8 +4,10 @@
 package ar.utn.thegrid.cpm;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-import javafx.scene.Node;
+import org.apache.commons.lang3.StringUtils;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,6 +28,7 @@ public class Nodo {
 	private Label lblNro;
 	private Label lblFechaTemprana;
 	private Label lblFechaTardia;
+	private String tareasQueArriban_s, tareasQueSalen_s;
 
 	public Nodo() {
 		lblNro = new Label();
@@ -70,5 +73,19 @@ public class Nodo {
 
 	public VBox getContenedor() {
 		return contenedor;
+	}
+
+	public void actualizarDescripcion() {
+		tareasQueArriban_s = StringUtils.join(
+				tareasQueArriban.stream().map(t -> t.getId())
+						.collect(Collectors.toList()), ",");
+		tareasQueSalen_s = StringUtils.join(
+				tareasQueSalen.stream().map(t -> t.getId())
+						.collect(Collectors.toList()), ",");
+	}
+
+	@Override
+	public String toString() {
+		return "(" + tareasQueArriban_s + ") => (" + tareasQueSalen_s + ")";
 	}
 }

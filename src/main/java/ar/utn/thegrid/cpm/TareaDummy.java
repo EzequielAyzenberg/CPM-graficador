@@ -8,6 +8,7 @@ package ar.utn.thegrid.cpm;
 public class TareaDummy extends Tarea{
 	public TareaDummy() {
 		super("", 0.0, "");
+		getFlecha().getStrokeDashArray().addAll(25d, 10d);
 	}
 
 	/**
@@ -31,8 +32,9 @@ public class TareaDummy extends Tarea{
 		this.setNodoDestino(nodoDestinoOriginal);
 		this.setPrecedencias(original.getId()+"");
 		int nroTareasDummy = original.getNroTareasDummy();
-		this.setId(original.getId()+"-"+nroTareasDummy+1);
-		original.setNroTareasDummy(nroTareasDummy+1);
+		nroTareasDummy++;
+		this.setId(original.getId()+"-"+nroTareasDummy);
+		original.setNroTareasDummy(nroTareasDummy);
 	}
 
 	@Override

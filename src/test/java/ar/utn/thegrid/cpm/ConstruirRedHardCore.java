@@ -31,7 +31,7 @@ public class ConstruirRedHardCore extends Application{
 		controller.agregarTarea(new Tarea("M", 9.0, "I"));
 		controller.agregarTarea(new Tarea("N", 8.0, "I,J"));
 		controller.agregarTarea(new Tarea("O", 5.0, "K,I"));
-		controller.agregarTarea(new Tarea("P", 4.0, "L,M"));
+		controller.agregarTarea(new Tarea("P", 4.0, "L,M,N"));
 		controller.generarEsquema();
 	}
 }

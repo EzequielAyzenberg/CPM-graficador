@@ -3,16 +3,15 @@ package ar.utn.thegrid.cpm;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -79,20 +78,12 @@ public class CPMController {
 		Scene scene = new Scene(pane, pane.getPrefWidth(), pane.getPrefHeight());
 		primaryStage.setScene(scene);
 		this.stage = primaryStage;
+		stage.setResizable(true);
+		stage.setMaximized(true);
 		menuBtnImportar.setOnAction(e -> explorarXls());
 		columnaNro.setCellValueFactory(f -> f.getValue().getPropertyId());
 		columnaDuracion.setCellValueFactory(f -> f.getValue().getPropertyDuracion());
 		columnaPrecedencias.setCellValueFactory(f -> f.getValue().getPropertyPrecedencias());
-
-//		Double posH = 50.0;
-//		for (Nodo nodo : modelo.getNodos()) {
-//			VBox contenedor = nodo.getContenedor();
-//			lienzo.getChildren().add(contenedor);
-//			contenedor.setLayoutX(posH);
-//			contenedor.setLayoutY(25);
-//			posH+=80+50;
-//			cargarlisteners(nodo);
-//		}
 	}
 
 	public void generarEsquema() {
@@ -101,13 +92,22 @@ public class CPMController {
 		deltaY = 100.0;
 		deltaX = 80.0;
 		ArrayList<Nodo> nodos = modelo.getNodos();
-		HashMap<String, Tarea> tareas = modelo.getTareas();
+		Collection<Tarea> tareas = modelo.getTareas().values();
 		@SuppressWarnings("unchecked")
 		ArrayList<Nodo>[] posiciones = new ArrayList[nodos.size()];
 		for (int i=0;i<nodos.size();i++) posiciones[i] = new ArrayList<>();
 		nodos.forEach(n -> lienzo.getChildren().add(n.getContenedor()));
-		tareas.values().forEach(t -> lienzo.getChildren().add(t.getFlecha()));
+		tareas.forEach(t -> lienzo.getChildren().add(t.getFlecha()));
 		disponerEnEsquema(nodoInicial,0,posiciones);
+		int maxPos = 0;
+		int maxProfundidad = 0;
+		for (maxPos = 0; posiciones[maxPos].size() > 0; maxPos++){
+			int profundidad = posiciones[maxPos].size();
+			if (profundidad > maxProfundidad) 
+				maxProfundidad = profundidad;
+		}
+		lienzo.setPrefSize((deltaX+50)*maxPos, (deltaY+50)*maxProfundidad);
+		tareas.forEach(t -> t.renderizarFlecha(lienzo));
 	}
 
 	private void disponerEnEsquema(Nodo nodo, int nivel, ArrayList<Nodo>[] nodosNivelados) {

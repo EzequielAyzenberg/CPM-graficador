@@ -5,7 +5,6 @@ package ar.utn.thegrid.cpm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -14,13 +13,11 @@ import java.util.stream.Collectors;
  * @author ayzenberg
  */
 public class ModeloCPM {
-	private Nodo nodoInicial, nodoFinal = null;
+	private Nodo nodoInicial;
 	private HashMap<String, Tarea> tareas = new HashMap<>();
 	private ArrayList<Nodo> nodos = new ArrayList<>();
-	private int contadorNodos;
 
 	public ModeloCPM() {
-		contadorNodos = 1;
 		nodoInicial = new Nodo();
 		nodoInicial.setNumeroNodo(0);
 		nodos.add(nodoInicial);
@@ -61,6 +58,7 @@ public class ModeloCPM {
 		// junto las hojas en un solo nodo, siempre que sea posible.
 		for (Tarea precedente : precedentes) {
 			if (precedente == precedenteApoyo) continue;
+			if (precedente.getNodoDestino().equals(precedenteApoyo.getNodoDestino())) continue;
 			if (precedente.esHoja()) {
 				nodos.remove(precedente.getNodoDestino());
 				precedente.setNodoDestino(precedenteApoyo.getNodoDestino());
@@ -71,8 +69,9 @@ public class ModeloCPM {
 				dummy.setNodoOrigen(precedente.getNodoDestino());
 				dummy.setNodoDestino(precedenteApoyo.getNodoDestino());
 				int nroTareasDummy = precedente.getNroTareasDummy();
-				dummy.setId(precedente.getId()+"-"+nroTareasDummy+1);
-				precedente.setNroTareasDummy(nroTareasDummy+1);
+				nroTareasDummy++;
+				dummy.setId(precedente.getId()+"-"+nroTareasDummy);
+				precedente.setNroTareasDummy(nroTareasDummy);
 				tareas.put(dummy.getId(), dummy);
 			}
 		}
@@ -104,6 +103,7 @@ public class ModeloCPM {
 				if (!tareasPrecedentes.contains(tareaDelNodo)) {
 					// Hay una tarea que no es precedente :-(
 					crearTareaDummy(tarea);
+					break;
 				}
 			}
 		}
