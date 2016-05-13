@@ -1,10 +1,9 @@
 /**
- * 
+ *
  */
 package ar.utn.thegrid.cpm;
 
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /** Wrapper para las tareas en la tabla
@@ -14,13 +13,13 @@ import javafx.beans.property.SimpleStringProperty;
 public class FilaTarea {
 
 	private Tarea tarea;
-	private SimpleIntegerProperty propertyNro;
+	private SimpleStringProperty propertyId;
 	private SimpleDoubleProperty propertyDuracion;
 	private SimpleStringProperty propertyPrecedencias;
 
 	public FilaTarea(Tarea tarea) {
 		this.tarea = tarea;
-		propertyNro = new SimpleIntegerProperty(tarea.getNro());
+		propertyId = new SimpleStringProperty(tarea.getId());
 		propertyDuracion = new SimpleDoubleProperty(tarea.getDuracion());
 		propertyPrecedencias = new SimpleStringProperty(tarea.getPrecedencias());
 	}
@@ -29,8 +28,8 @@ public class FilaTarea {
 		return tarea;
 	}
 
-	public SimpleIntegerProperty getPropertyNro() {
-		return propertyNro;
+	public SimpleStringProperty getPropertyId() {
+		return propertyId;
 	}
 
 	public SimpleDoubleProperty getPropertyDuracion() {

@@ -27,9 +27,8 @@ public class Nodo {
 	private Label lblFechaTemprana;
 	private Label lblFechaTardia;
 
-	public Nodo(int numeroNodo) {
-		this.setNumeroNodo(numeroNodo);
-		lblNro = new Label(numeroNodo+"");
+	public Nodo() {
+		lblNro = new Label();
 		lblFechaTemprana = new Label();
 		lblFechaTardia = new Label();
 		HBox hBox = new HBox(30, lblFechaTemprana, lblFechaTardia);

@@ -5,6 +5,8 @@ package ar.utn.thegrid.cpm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Donde se realizan todos los calculos.
@@ -13,53 +15,142 @@ import java.util.HashMap;
  */
 public class ModeloCPM {
 	private Nodo nodoInicial, nodoFinal = null;
-	private HashMap<Integer, Tarea> tareas = new HashMap<>();
+	private HashMap<String, Tarea> tareas = new HashMap<>();
 	private ArrayList<Nodo> nodos = new ArrayList<>();
 	private int contadorNodos;
 
 	public ModeloCPM() {
 		contadorNodos = 1;
-		this.nodoInicial = new Nodo(contadorNodos);
+		nodoInicial = new Nodo();
+		nodoInicial.setNumeroNodo(0);
 		nodos.add(nodoInicial);
 	}
 
 	public void agregarTarea(Tarea tarea) throws Exception {
 		if (tarea == null) throw new Exception("La tarea no puede ser null");
 
-		String precedencias = tarea.getPrecedencias();
-		if (precedencias.isEmpty()) {
-			tarea.setNodoOrigen(nodoInicial);
-			contadorNodos++;
-			Nodo nodoFin = new Nodo(contadorNodos);
-			nodos.add(nodoFin);
-			tarea.setNodoDestino(nodoFin);
+		if (tarea.getPrecedencias().isEmpty()) {
+			agregarComoInicial(tarea);
 		} else {
-			ArrayList<Tarea> tareasPrecedentes = new ArrayList<>();
-			for (String s : precedencias.split(",")) {
-				Integer precedencia = Integer.valueOf(s);
-				Tarea tareaPrecedente = tareas.get(precedencia);
-				if (tareaPrecedente == null) {
-					throw new Exception("La tarea tiene una precedencia no cargada");
-				}
-				tareasPrecedentes.add(tareaPrecedente);
+			agregarComoIntermedia(tarea);
+
+		}
+		tareas.put(tarea.getId(), tarea);
+	}
+
+	private void agregarComoIntermedia(Tarea tarea) throws Exception {
+		ArrayList<Tarea> precedentes = obtenerPrecedentes(tarea);
+		normalizarNodos(precedentes);
+
+		if (precedentes.size()==1) {
+			Nodo nodoOrigen = precedentes.get(0).getNodoDestino();
+			tarea.setNodoOrigen(nodoOrigen);
+			crearNuevoNodoFinalParaTarea(tarea);
+			return;
+		}
+
+		Tarea precedenteApoyo = elegirTareaDeApoyo(precedentes);
+		juntarTareasSiEsPosible(precedenteApoyo, precedentes);
+		tarea.setNodoOrigen(precedenteApoyo.getNodoDestino());
+		crearNuevoNodoFinalParaTarea(tarea);
+	}
+
+	private void juntarTareasSiEsPosible(Tarea precedenteApoyo, ArrayList<Tarea> precedentes) {
+		// Elimino nodos redundantes. Si me propongo a establecer
+		// una nueva tarea con 3 tareas precedentes y todas ellas son hojas,
+		// junto las hojas en un solo nodo, siempre que sea posible.
+		for (Tarea precedente : precedentes) {
+			if (precedente == precedenteApoyo) continue;
+			if (precedente.esHoja()) {
+				nodos.remove(precedente.getNodoDestino());
+				precedente.setNodoDestino(precedenteApoyo.getNodoDestino());
+			} else {
+				// El nodo tiene mas de una tarea entrante,
+				// se puentean los nodos con una dummy.
+				TareaDummy dummy = new TareaDummy();
+				dummy.setNodoOrigen(precedente.getNodoDestino());
+				dummy.setNodoDestino(precedenteApoyo.getNodoDestino());
+				int nroTareasDummy = precedente.getNroTareasDummy();
+				dummy.setId(precedente.getId()+"-"+nroTareasDummy+1);
+				precedente.setNroTareasDummy(nroTareasDummy+1);
+				tareas.put(dummy.getId(), dummy);
 			}
-			for (Tarea tareaPrecedente : tareasPrecedentes) {
-				Nodo nodoDestino = tareaPrecedente.getNodoDestino();
-				if (nodoDestino.getTareasQueSalen().isEmpty()) {
-					tareasPrecedentes.forEach(t -> {
-						if (!t.getNodoDestino().equals(nodoDestino)) {
-							nodos.remove(t.getNodoDestino());
-						}
-						t.setNodoDestino(nodoDestino);
-					});
-					break;
+		}
+	}
+
+	private void crearNuevoNodoFinalParaTarea(Tarea tarea) {
+		Nodo nodoFin = new Nodo();
+		nodos.add(nodoFin);
+		tarea.setNodoDestino(nodoFin);
+	}
+
+	private Tarea elegirTareaDeApoyo(ArrayList<Tarea> precedentes) {
+		// Itero. Me interesa como apoyo una tarea hoja.
+		// Sino me quedo con cualquiera.
+		for (Tarea tarea : precedentes) {
+			if (tarea.getNodoDestino().getTareasQueSalen().isEmpty()) {
+				return tarea;
+			}
+		}
+		return precedentes.get(0);
+	}
+
+	private void normalizarNodos(ArrayList<Tarea> tareasPrecedentes) {
+		// Si hay tareas que tienen nodos destino con precedencias que
+		// no quiero, debo crear tareas dummy para separar nodos
+		for (Tarea tarea : tareasPrecedentes) {
+			Nodo nodoDestino = tarea.getNodoDestino();
+			for (Tarea tareaDelNodo : nodoDestino.getTareasQueArriban()) {
+				if (!tareasPrecedentes.contains(tareaDelNodo)) {
+					// Hay una tarea que no es precedente :-(
+					crearTareaDummy(tarea);
 				}
 			}
 		}
-		tareas.put(tarea.getNro(), tarea);
+	}
+
+	private void crearTareaDummy(Tarea tarea) {
+		TareaDummy tareaDummy = new TareaDummy();
+		tareaDummy.extenderTarea(tarea);
+		nodos.add(tareaDummy.getNodoOrigen());
+		tareas.put(tareaDummy.getId(), tareaDummy);
+	}
+
+	private ArrayList<Tarea> obtenerPrecedentes(Tarea tarea) throws Exception {
+		ArrayList<Tarea> tareasPrecedentes;
+		tareasPrecedentes = new ArrayList<>();
+		for (String precedencia : tarea.getPrecedencias().split(",")) {
+			Tarea tareaPrecedente = tareas.get(precedencia);
+			if (tareaPrecedente == null) {
+				throw new Exception("La tarea tiene una precedencia no cargada");
+			}
+			tareasPrecedentes.add(tareaPrecedente);
+		}
+		return tareasPrecedentes;
+	}
+
+	private void agregarComoInicial(Tarea tarea) {
+		tarea.setNodoOrigen(nodoInicial);
+		crearNuevoNodoFinalParaTarea(tarea);
 	}
 
 	public ArrayList<Nodo> getNodos() {
 		return nodos;
+	}
+
+	public HashMap<String, Tarea> getTareas() {
+		return tareas;
+	}
+
+	public void generarNodoFinal() {
+		ArrayList<Tarea> finales = (ArrayList<Tarea>) tareas.values().stream()
+				.filter(t -> t.esHoja()).collect(Collectors.toList());
+		if (finales.isEmpty()) return;
+		Tarea pivote = finales.get(0);
+		juntarTareasSiEsPosible(pivote, finales);
+	}
+
+	public Nodo getNodoInicial() {
+		return nodoInicial;
 	}
 }

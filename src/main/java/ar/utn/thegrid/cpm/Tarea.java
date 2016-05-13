@@ -3,8 +3,6 @@
  */
 package ar.utn.thegrid.cpm;
 
-import javafx.scene.Node;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.shape.Line;
 
 /**
@@ -14,14 +12,15 @@ import javafx.scene.shape.Line;
  *
  */
 public class Tarea {
-	private Integer nro;
+	private String id;
 	private Double duracion;
 	private String precedencias;
 	private Nodo nodoOrigen, nodoDestino;
 	private Line flecha = new Line();
+	private int nroTareasDummy = 0;
 
-	public Tarea(Integer nro, Double duracion, String precedencias) {
-		this.setNro(nro);
+	public Tarea(String id, Double duracion, String precedencias) {
+		this.setId(id);
 		this.setDuracion(duracion);
 		this.setPrecedencias(precedencias);
 	}
@@ -42,12 +41,12 @@ public class Tarea {
 		this.precedencias = precedencias;
 	}
 
-	public Integer getNro() {
-		return nro;
+	public String getId() {
+		return id;
 	}
 
-	public void setNro(Integer nro) {
-		this.nro = nro;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Nodo getNodoOrigen() {
@@ -82,5 +81,18 @@ public class Tarea {
 
 	public Line getFlecha() {
 		return flecha;
+	}
+
+	public boolean esHoja() {
+		return nodoDestino.getTareasQueArriban().size() == 1
+			&& nodoDestino.getTareasQueSalen().isEmpty();
+	}
+
+	public int getNroTareasDummy() {
+		return nroTareasDummy ;
+	}
+
+	public void setNroTareasDummy(int i) {
+		nroTareasDummy = i;
 	}
 }

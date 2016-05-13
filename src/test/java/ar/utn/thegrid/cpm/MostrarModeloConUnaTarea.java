@@ -16,6 +16,9 @@ public class MostrarModeloConUnaTarea extends Application{
 		this.controller = new CPMController();
 		controller.start(primaryStage);
 		primaryStage.show();
-		controller.agregarTarea(new Tarea(0, 1.0, ""));
+		controller.agregarTarea(new Tarea("A", 1.0, ""));
+		controller.agregarTarea(new Tarea("B", 1.0, "A"));
+		controller.agregarTarea(new Tarea("C", 1.0, ""));
+		controller.generarEsquema();
 	}
 }

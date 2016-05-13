@@ -2,6 +2,8 @@ package ar.utn.thegrid.cpm;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -32,7 +34,7 @@ public class CPMController {
 	@FXML
 	private TableView<FilaTarea> tabla;
 	@FXML
-	private TableColumn<FilaTarea, Number> columnaNro;
+	private TableColumn<FilaTarea, String> columnaNro;
 	@FXML
 	private TableColumn<FilaTarea, Number> columnaDuracion;
 	@FXML
@@ -40,6 +42,10 @@ public class CPMController {
 
 	private Stage stage;
 	private ModeloCPM modelo;
+
+	private Double deltaY;
+
+	private Double deltaX;
 
 	public CPMController() {
 		this.modelo = new ModeloCPM();
@@ -52,10 +58,10 @@ public class CPMController {
 			int numFilas = hoja.getRows();
 			for (int fila = 1; fila < numFilas; fila++) {
 				// Recorre cada fila de la hoja
-				Integer nro = Integer.valueOf(hoja.getCell(0, fila).getContents());
+				String id = hoja.getCell(0, fila).getContents();
 				Double duracion = Double.valueOf(hoja.getCell(1, fila).getContents());
 				String precedencias = hoja.getCell(2, fila).getContents();
-				Tarea tarea = new Tarea(nro, duracion, precedencias);
+				Tarea tarea = new Tarea(id, duracion, precedencias);
 				tabla.getItems().add(new FilaTarea(tarea));
 			}
 		} catch (Exception ioe) {
@@ -74,18 +80,46 @@ public class CPMController {
 		primaryStage.setScene(scene);
 		this.stage = primaryStage;
 		menuBtnImportar.setOnAction(e -> explorarXls());
-		columnaNro.setCellValueFactory(f -> f.getValue().getPropertyNro());
+		columnaNro.setCellValueFactory(f -> f.getValue().getPropertyId());
 		columnaDuracion.setCellValueFactory(f -> f.getValue().getPropertyDuracion());
 		columnaPrecedencias.setCellValueFactory(f -> f.getValue().getPropertyPrecedencias());
 
-		Double posH = 50.0;
-		for (Nodo nodo : modelo.getNodos()) {
-			VBox contenedor = nodo.getContenedor();
-			lienzo.getChildren().add(contenedor);
-			contenedor.setLayoutX(posH);
-			contenedor.setLayoutY(25);
-			posH+=80+50;
-			cargarlisteners(nodo);
+//		Double posH = 50.0;
+//		for (Nodo nodo : modelo.getNodos()) {
+//			VBox contenedor = nodo.getContenedor();
+//			lienzo.getChildren().add(contenedor);
+//			contenedor.setLayoutX(posH);
+//			contenedor.setLayoutY(25);
+//			posH+=80+50;
+//			cargarlisteners(nodo);
+//		}
+	}
+
+	public void generarEsquema() {
+		modelo.generarNodoFinal();
+		Nodo nodoInicial = modelo.getNodoInicial();
+		deltaY = 100.0;
+		deltaX = 80.0;
+		ArrayList<Nodo> nodos = modelo.getNodos();
+		HashMap<String, Tarea> tareas = modelo.getTareas();
+		@SuppressWarnings("unchecked")
+		ArrayList<Nodo>[] posiciones = new ArrayList[nodos.size()];
+		for (int i=0;i<nodos.size();i++) posiciones[i] = new ArrayList<>();
+		nodos.forEach(n -> lienzo.getChildren().add(n.getContenedor()));
+		tareas.values().forEach(t -> lienzo.getChildren().add(t.getFlecha()));
+		disponerEnEsquema(nodoInicial,0,posiciones);
+	}
+
+	private void disponerEnEsquema(Nodo nodo, int nivel, ArrayList<Nodo>[] nodosNivelados) {
+		ArrayList<Nodo> nodosDelNivel = nodosNivelados[nivel];
+		if (nodosDelNivel.contains(nodo)) return;
+		nodosDelNivel.add(nodo);
+		VBox contenedor = nodo.getContenedor();
+		contenedor.setLayoutY((nodosDelNivel.size()-1)*(deltaY)+20);
+		contenedor.setLayoutX(nivel*(deltaX+50)+50);
+		cargarlisteners(nodo);
+		for (Tarea tarea : nodo.getTareasQueSalen()) {
+			disponerEnEsquema(tarea.getNodoDestino(), nivel+1, nodosNivelados);
 		}
 	}
 
@@ -109,7 +143,7 @@ public class CPMController {
 	public void agregarTarea(Tarea tarea) {
 		try {
 			modelo.agregarTarea(tarea);
-			lienzo.getChildren().add(tarea.getFlecha());
+//			lienzo.getChildren().add(tarea.getFlecha());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
