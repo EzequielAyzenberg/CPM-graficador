@@ -1,7 +1,21 @@
+.intermedio {
+	-fx-background-image: url(nodo-intermedio.png);
+}
+
+.intermedio-critico {
+	-fx-background-image: url(nodo-intermedio-critico.png);
+}
+
+.final {
+	-fx-background-image: url(nodo-final.png);
+}
+.inicial {
+	-fx-background-image: url(nodo-inicial.png);
+}
+
 .nodo {
-	-fx-pref-width: 80px;
+	-fx-pref-width: 102px;
 	-fx-pref-height: 80px;
-	-fx-background-image: url(nodo.png);
 	-fx-alignment: center;
 }
 
@@ -9,6 +23,16 @@
 	-fx-cursor:hand;
 }
 
-.nodo hbox {
-	-fx-background-color: red;
+.nodo .hbox {
+	-fx-max-width: 75px;
+	-fx-alignment: center;
+}
+
+.nodo .hbox .label{
+	-fx-alignment: center;
+	-fx-min-width: 35px;
+}
+
+.critica {
+	-fx-stroke: red;
 }

@@ -87,6 +87,9 @@ public class CPMController {
 
 	public void generarEsquema() {
 		modelo.generarNodoFinal();
+		modelo.calcularFechas();
+		modelo.calcularMargenes();
+		modelo.calcularIntervalosDeFlotamiento();
 		Nodo nodoInicial = modelo.getNodoInicial();
 		deltaY = 100.0;
 		deltaX = 80.0;
@@ -105,7 +108,7 @@ public class CPMController {
 		int maxProfundidad = 0;
 		for (maxPos = 0; posiciones[maxPos].size() > 0; maxPos++){
 			int profundidad = posiciones[maxPos].size();
-			if (profundidad > maxProfundidad) 
+			if (profundidad > maxProfundidad)
 				maxProfundidad = profundidad;
 		}
 		lienzo.setPrefSize((deltaX+50)*maxPos, (deltaY+50)*maxProfundidad);

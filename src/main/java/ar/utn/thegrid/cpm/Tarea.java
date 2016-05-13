@@ -23,6 +23,9 @@ public class Tarea {
 	private Line flecha = new Line();
 	private int nroTareasDummy = 0;
 	private Label id_lbl;
+	private double margenLibre;
+	private double margenTotal;
+	private boolean critica;
 
 	public Tarea(String id, Double duracion, String precedencias) {
 		id_lbl = new Label();
@@ -37,6 +40,7 @@ public class Tarea {
 
 	public void setDuracion(Double duracion) {
 		this.duracion = duracion;
+		this.id_lbl.setText(id+"("+duracion+")");
 	}
 
 	public String getPrecedencias() {
@@ -96,14 +100,14 @@ public class Tarea {
 	public void setNroTareasDummy(int i) {
 		nroTareasDummy = i;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "["+id+", "+duracion+", ("+precedencias+")]";
 	}
-	
+
 	public void renderizarFlecha(AnchorPane lienzo) {
-		DoubleBinding startX = nodoOrigen.getContenedor().layoutXProperty().add(80);
+		DoubleBinding startX = nodoOrigen.getContenedor().layoutXProperty().add(102);
 		DoubleBinding startY = nodoOrigen.getContenedor().layoutYProperty().add(40);
 		DoubleProperty endX = nodoDestino.getContenedor().layoutXProperty();
 		DoubleBinding endY = nodoDestino.getContenedor().layoutYProperty().add(40);
@@ -118,5 +122,26 @@ public class Tarea {
 		id_lbl.setLayoutX((startX.get() + endX.get())/2);
 		id_lbl.setLayoutY((startY.get() + endY.get())/2);
 		lienzo.getChildren().add(id_lbl);
+	}
+
+	public void calcularMargenes() {
+		margenLibre = nodoDestino.getFechaTemprana()
+				- nodoOrigen.getFechaTemprana() - duracion;
+		margenTotal = nodoDestino.getFechaTardia()
+				- nodoOrigen.getFechaTemprana() - duracion;
+		setCritica(margenLibre + margenTotal == 0);
+	}
+
+	public void setCritica(boolean critica) {
+		this.critica = critica;
+		if (critica) {
+			flecha.getStyleClass().add("critica");
+		} else {
+			flecha.getStyleClass().removeAll("critica");
+		}
+	}
+
+	public boolean isCritica() {
+		return critica;
 	}
 }

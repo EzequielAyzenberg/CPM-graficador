@@ -16,6 +16,7 @@ public class ModeloCPM {
 	private Nodo nodoInicial;
 	private HashMap<String, Tarea> tareas = new HashMap<>();
 	private ArrayList<Nodo> nodos = new ArrayList<>();
+	private Nodo nodoFinal;
 
 	public ModeloCPM() {
 		nodoInicial = new Nodo();
@@ -152,5 +153,55 @@ public class ModeloCPM {
 
 	public Nodo getNodoInicial() {
 		return nodoInicial;
+	}
+
+	public void calcularFechas() {
+		nodoInicial.settearComoNodoInicial();
+		calcularFechasTempranas(nodoInicial);
+		nodoFinal.settearComoNodoFinal();
+		calcularFechasTardias(nodoFinal);
+	}
+
+	private void calcularFechasTardias(Nodo nodo) {
+		ArrayList<Tarea> tareasQueArriban = nodo.getTareasQueArriban();
+		if (tareasQueArriban.isEmpty()) {
+			return;
+		}
+		for (Tarea tarea : tareasQueArriban) {
+			Double desfasaje = nodo.getFechaTardia() - tarea.getDuracion();
+			Nodo nodoOrigen = tarea.getNodoOrigen();
+			if (nodoOrigen.getFechaTardia() != null &&
+				nodoOrigen.getFechaTardia() < desfasaje) continue;
+			nodoOrigen.setFechaTardia(desfasaje);
+			calcularFechasTardias(nodoOrigen);
+		}
+	}
+
+	private void calcularFechasTempranas(Nodo nodo) {
+		ArrayList<Tarea> tareasQueSalen = nodo.getTareasQueSalen();
+		if (tareasQueSalen.isEmpty()) {
+			nodoFinal = nodo;
+			return;
+		}
+		for (Tarea tarea : tareasQueSalen) {
+			Double margenAbsoluto = nodo.getFechaTemprana() + tarea.getDuracion();
+			Nodo nodoDestino = tarea.getNodoDestino();
+			if (nodoDestino.getFechaTemprana() != null &&
+				margenAbsoluto < nodoDestino.getFechaTemprana()) continue;
+			nodoDestino.setFechaTemprana(margenAbsoluto);
+			calcularFechasTempranas(nodoDestino);
+		}
+	}
+
+	public void calcularMargenes() {
+		for (Tarea tarea : tareas.values()) {
+			tarea.calcularMargenes();
+		}
+	}
+
+	public void calcularIntervalosDeFlotamiento() {
+		for (Nodo nodo : nodos) {
+			nodo.calcularIntervaloDeFlotamiento();
+		}
 	}
 }

@@ -25,7 +25,7 @@ public class CargadorListenersDragAndDrop {
 		contenedor.setOnDragDetected(new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent event) {
-				System.out.println("DragDetected");
+//				System.out.println("DragDetected");
 				prevLblCordX= (int) contenedor.getLayoutX();
 			    prevLblCordY= (int) contenedor.getLayoutY();
 			    prevMouseCordX= (int) event.getX();
