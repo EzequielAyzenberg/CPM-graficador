@@ -12,20 +12,16 @@
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
               <MenuItem fx:id="menuBtnImportar" mnemonicParsing="false" text="Importar datos de CPM (.xls)..." />
-                  <MenuItem disable="true" mnemonicParsing="false" text="Guardar Proyecto..." />
-                  <MenuItem disable="true" mnemonicParsing="false" text="Exportar imagen CPM..." />
+                  <MenuItem fx:id="menuBtnAbrir" mnemonicParsing="false" text="Abrir Proyecto..." />
+                  <MenuItem fx:id="menuBtnGuardar" disable="true" mnemonicParsing="false" text="Guardar Proyecto..." />
+                  <MenuItem fx:id="menuBtnExportar" disable="true" mnemonicParsing="false" text="Exportar imagen..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Salir" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Acción">
-            <items>
-              <MenuItem disable="true" mnemonicParsing="false" text="Generar CPM" />
-            </items>
-          </Menu>
             <Menu mnemonicParsing="false" text="Opciones">
               <items>
-                <MenuItem mnemonicParsing="false" text="Tamaño del lienzo" />
+                <MenuItem mnemonicParsing="false" text="Dimensiones del lienzo" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Ayuda">

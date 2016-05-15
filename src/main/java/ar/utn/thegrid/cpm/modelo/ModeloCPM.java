@@ -1,11 +1,17 @@
 /**
  *
  */
-package ar.utn.thegrid.cpm;
+package ar.utn.thegrid.cpm.modelo;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 
 /**
  * Donde se realizan todos los calculos.
@@ -17,6 +23,7 @@ public class ModeloCPM {
 	private HashMap<String, Tarea> tareas = new HashMap<>();
 	private ArrayList<Nodo> nodos = new ArrayList<>();
 	private Nodo nodoFinal;
+	private double anchoLienzo, altoLienzo;
 
 	public ModeloCPM() {
 		nodoInicial = new Nodo();
@@ -60,22 +67,32 @@ public class ModeloCPM {
 		for (Tarea precedente : precedentes) {
 			if (precedente == precedenteApoyo) continue;
 			if (precedente.getNodoDestino().equals(precedenteApoyo.getNodoDestino())) continue;
+			if (precedente.getNodoOrigen().equals(precedenteApoyo.getNodoOrigen())) {
+				// Los nodos van y vienen al mismo sitio.
+				puentearConDummy(precedenteApoyo, precedente);
+				continue;
+			}
 			if (precedente.esHoja()) {
 				nodos.remove(precedente.getNodoDestino());
 				precedente.setNodoDestino(precedenteApoyo.getNodoDestino());
 			} else {
 				// El nodo tiene mas de una tarea entrante,
 				// se puentean los nodos con una dummy.
-				TareaDummy dummy = new TareaDummy();
-				dummy.setNodoOrigen(precedente.getNodoDestino());
-				dummy.setNodoDestino(precedenteApoyo.getNodoDestino());
-				int nroTareasDummy = precedente.getNroTareasDummy();
-				nroTareasDummy++;
-				dummy.setId(precedente.getId()+"."+nroTareasDummy);
-				precedente.setNroTareasDummy(nroTareasDummy);
-				tareas.put(dummy.getId(), dummy);
+				puentearConDummy(precedenteApoyo, precedente);
 			}
 		}
+	}
+
+	private void puentearConDummy(Tarea precedenteApoyo, Tarea precedente) {
+		TareaDummy dummy = new TareaDummy();
+		dummy.setNodoOrigen(precedente.getNodoDestino());
+		dummy.setPrecedencias(precedente.getId());
+		dummy.setNodoDestino(precedenteApoyo.getNodoDestino());
+		int nroTareasDummy = precedente.getNroTareasDummy();
+		nroTareasDummy++;
+		dummy.setId(precedente.getId()+"."+nroTareasDummy);
+		precedente.setNroTareasDummy(nroTareasDummy);
+		tareas.put(dummy.getId(), dummy);
 	}
 
 	private void crearNuevoNodoFinalParaTarea(Tarea tarea) {
@@ -203,5 +220,36 @@ public class ModeloCPM {
 		for (Nodo nodo : nodos) {
 			nodo.calcularIntervaloDeFlotamiento();
 		}
+	}
+
+	public void persistir(File destino) throws IOException {
+		String path = destino.getAbsolutePath();
+		if (!path.contains(".xml")) {
+			path+=".xml";
+		}
+		FileWriter out = new FileWriter(destino);
+		XStream xStream = new XStream();
+		xStream.toXML(this, out);
+		out.close();
+	}
+
+	public static ModeloCPM recuperar(File archivo) throws XStreamException{
+		return (ModeloCPM) new XStream().fromXML(archivo);
+	}
+
+	public double getAnchoLienzo() {
+		return anchoLienzo;
+	}
+
+	public void setAnchoLienzo(double anchoLienzo) {
+		this.anchoLienzo = anchoLienzo;
+	}
+
+	public double getAltoLienzo() {
+		return altoLienzo;
+	}
+
+	public void setAltoLienzo(double altoLienzo) {
+		this.altoLienzo = altoLienzo;
 	}
 }

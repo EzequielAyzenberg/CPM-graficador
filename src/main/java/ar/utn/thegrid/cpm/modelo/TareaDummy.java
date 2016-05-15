@@ -1,4 +1,4 @@
-package ar.utn.thegrid.cpm;
+package ar.utn.thegrid.cpm.modelo;
 
 /**
  * Tarea sin datos relevantes. Se usa para armar bien la red.
@@ -8,7 +8,11 @@ package ar.utn.thegrid.cpm;
 public class TareaDummy extends Tarea{
 	public TareaDummy() {
 		super("", 0.0, "");
-		getFlecha().getStrokeDashArray().addAll(25d, 10d);
+	}
+
+	@Override
+	public boolean esDummy() {
+		return true;
 	}
 
 	/**
@@ -35,6 +39,7 @@ public class TareaDummy extends Tarea{
 		nroTareasDummy++;
 		this.setId(original.getId()+"."+nroTareasDummy);
 		original.setNroTareasDummy(nroTareasDummy);
+		setPrecedencias(original.getId());
 	}
 
 	@Override

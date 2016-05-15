@@ -1,5 +1,7 @@
 package ar.utn.thegrid.cpm;
 
+import ar.utn.thegrid.cpm.modelo.Tarea;
+import ar.utn.thegrid.cpm.visual.CPMController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -33,5 +35,6 @@ public class ConstruirRedHardCore extends Application{
 		controller.agregarTarea(new Tarea("O", 5.0, "K,I"));
 		controller.agregarTarea(new Tarea("P", 4.0, "L,M,N"));
 		controller.generarEsquema();
+		controller.agregarTareasATabla();
 	}
 }

@@ -1,8 +1,9 @@
 /**
  *
  */
-package ar.utn.thegrid.cpm;
+package ar.utn.thegrid.cpm.visual;
 
+import ar.utn.thegrid.cpm.dibujable.NodoDibujable;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -19,7 +20,7 @@ public class CargadorListenersDragAndDrop {
 	private int diffX;
 	private int diffY;
 
-	public CargadorListenersDragAndDrop(Nodo nodo, AnchorPane lienzo) {
+	public CargadorListenersDragAndDrop(NodoDibujable nodo, AnchorPane lienzo) {
 
 		VBox contenedor = nodo.getContenedor();
 		contenedor.setOnDragDetected(new EventHandler<MouseEvent>() {

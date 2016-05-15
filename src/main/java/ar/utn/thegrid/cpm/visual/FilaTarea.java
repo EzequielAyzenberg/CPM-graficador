@@ -1,8 +1,9 @@
 /**
  *
  */
-package ar.utn.thegrid.cpm;
+package ar.utn.thegrid.cpm.visual;
 
+import ar.utn.thegrid.cpm.modelo.Tarea;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 

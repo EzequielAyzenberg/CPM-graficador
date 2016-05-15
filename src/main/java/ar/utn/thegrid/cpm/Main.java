@@ -1,5 +1,6 @@
 package ar.utn.thegrid.cpm;
 
+import ar.utn.thegrid.cpm.visual.CPMController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

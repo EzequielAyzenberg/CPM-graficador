@@ -1,22 +1,17 @@
 /**
  *
  */
-package ar.utn.thegrid.cpm;
+package ar.utn.thegrid.cpm.modelo;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-
 /**
  * Abstraccion de un nodo (conexion entre tareas)
  *
  * @author eayzenberg
- *
  */
 public class Nodo {
 	private ArrayList<Tarea> tareasQueArriban = new ArrayList<Tarea>();
@@ -24,26 +19,14 @@ public class Nodo {
 	private Double fechaTemprana = null;
 	private Double fechaTardia = null;
 	private int numeroNodo;
-	private VBox contenedor;
-	private Label lblNro;
-	private Label lblFechaTemprana;
-	private Label lblFechaTardia;
 	private String tareasQueArriban_s, tareasQueSalen_s;
 	private double intervaloFlotamiento;
 	private boolean esInicial;
 	private boolean esFinal;
+	private double layoutX, layoutY;
+	private boolean critico;
 
 	public Nodo() {
-		lblNro = new Label();
-		lblFechaTemprana = new Label();
-		lblFechaTemprana.setWrapText(true);
-		lblFechaTardia = new Label();
-		lblFechaTardia.setWrapText(true);
-		HBox hBox = new HBox( lblFechaTemprana, lblFechaTardia);
-		hBox.getStyleClass().add("hbox");
-		contenedor = new VBox(10.0, lblNro, hBox);
-		contenedor.getStyleClass().add("nodo");
-		contenedor.getStyleClass().add("intermedio");
 	}
 
 	public ArrayList<Tarea> getTareasQueArriban() {
@@ -60,7 +43,6 @@ public class Nodo {
 
 	public void setFechaTardia(Double fechaTardia) {
 		this.fechaTardia = fechaTardia;
-		lblFechaTardia.setText(fechaTardia+"");
 	}
 
 	public Double getFechaTemprana() {
@@ -69,7 +51,6 @@ public class Nodo {
 
 	public void setFechaTemprana(Double fechaTemprana) {
 		this.fechaTemprana = fechaTemprana;
-		lblFechaTemprana.setText(fechaTemprana+"");
 	}
 
 	public int getNumeroNodo() {
@@ -78,11 +59,6 @@ public class Nodo {
 
 	public void setNumeroNodo(int numeroNodo) {
 		this.numeroNodo = numeroNodo;
-		lblNro.setText(numeroNodo+"");
-	}
-
-	public VBox getContenedor() {
-		return contenedor;
 	}
 
 	public void actualizarDescripcion() {
@@ -102,13 +78,11 @@ public class Nodo {
 	public void settearComoNodoInicial() {
 		setFechaTardia(0.0);
 		setFechaTemprana(0.0);
-		contenedor.getStyleClass().setAll("nodo", "inicial");
 		esInicial = true;
 	}
 
 	public void settearComoNodoFinal() {
 		setFechaTardia(fechaTemprana);
-		contenedor.getStyleClass().setAll("nodo", "final");
 		esFinal = true;
 	}
 
@@ -120,10 +94,34 @@ public class Nodo {
 	}
 
 	public void setCritico(boolean critico) {
-		if (critico) {
-			contenedor.getStyleClass().setAll("nodo", "intermedio-critico");
-		} else {
-			contenedor.getStyleClass().setAll("nodo", "intermedio");
-		}
+		this.critico = critico;
+	}
+
+	public void setLayoutX(Number n) {
+		layoutX = (Double) n;
+	}
+
+	public void setLayoutY(Number n) {
+		layoutY = (Double) n;
+	}
+
+	public boolean isNodoInicial() {
+		return esInicial;
+	}
+
+	public boolean isNodoFinal() {
+		return esFinal;
+	}
+
+	public boolean isCritico() {
+		return critico;
+	}
+
+	public double getLayoutX() {
+		return layoutX;
+	}
+
+	public double getLayoutY() {
+		return layoutY;
 	}
 }
