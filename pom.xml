@@ -10,8 +10,6 @@
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
 			<version>2.6.12</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/jxl.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -20,10 +18,10 @@
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/xstream/xstream -->
 		<dependency>
-   <groupId>com.thoughtworks.xstream</groupId>
-   <artifactId>xstream</artifactId>
-   <version>1.4.6</version>
-</dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.6</version>
+		</dependency>
 
 		<!-- http://mvnrepository.com/artifact/org.controlsfx/controlsfx-samples -->
 		<dependency>
@@ -103,7 +101,20 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>ar.utn.thegrid.cpm.Main</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

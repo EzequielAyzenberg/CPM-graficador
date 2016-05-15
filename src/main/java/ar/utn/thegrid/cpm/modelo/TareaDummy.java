@@ -20,13 +20,9 @@ public class TareaDummy extends Tarea{
 	 * haciendo que la primera mitad sea la
 	 * tarea original y la segunda mitad sea
 	 * la nueva tarea dummy, actualizando las referencias
-	 * de los nodos.<br><br>
+	 * de los nodos.
 	 *
-	 *  <b>O--------------Tarea------------->O</b> <br>
-	 *  pasa a ser <br>
-	 *  <b>O---Tarea---->O----Dummy--->O</b> <br>
-	 *
-	 * @param original
+	 * @param original La tarea original
 	 */
 	public void extenderTarea(Tarea original) {
 		Nodo nodoDestinoOriginal = original.getNodoDestino();
