@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -78,6 +79,8 @@ public class CPMController {
 			Sheet hoja = archivoExcel.getSheet(0);
 			int numFilas = hoja.getRows();
 			ArrayList<String> idsTarea = new ArrayList<>();
+			ArrayList<Tarea> tareas = new ArrayList<>();
+			
 			for (int fila = 1; fila < numFilas; fila++) {
 				// Recorre cada fila de la hoja
 				String id = hoja.getCell(0, fila).getContents();
@@ -93,28 +96,32 @@ public class CPMController {
 				}
 
 				String precedencias = hoja.getCell(2, fila).getContents();
-
 				idsTarea.add(id);
-				for (String precedencia : precedencias.split(",")) {
+				tareas.add(new Tarea(id, duracion, precedencias));
+			}
+			
+			for (Tarea tarea : tareas) {
+				for (String precedencia : tarea.getPrecedencias().split(",")) {
 					if (precedencia.isEmpty()) continue;
+					String id = tarea.getId();
 					if (precedencia == id) {
-						throw new Exception("Fila "+(fila+1)+" malformada. "
+						throw new Exception("Tarea "+id+" malformada. "
 								+ "No puede tener una precedencia a si misma");
 					}
 					if (!idsTarea.contains(precedencia)) {
-						throw new Exception("Fila "+(fila+1)+" malformada. "+
+						throw new Exception("Tarea "+id+" malformada. "+
 								"Tiene precedencias inexistentes. \n\n"
-										+ "No existe la tarea "+precedencia
-										+ "\nRecuerda que las tareas deben venir en orden.");
+								+ "No existe la tarea "+precedencia);
 					}
 				}
-
-				agregarTarea(new Tarea(id, duracion, precedencias));
 			}
+			ordenarTareas(tareas);
+			tareas.forEach(tarea ->agregarTarea(tarea));
 			menuBtnGuardar.setDisable(false);
 			agregarTareasATabla();
 			generarEsquema();
 		} catch (Exception e) {
+			e.printStackTrace();
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error en la carga de datos");
 			alert.setContentText(e.getMessage());
@@ -122,6 +129,54 @@ public class CPMController {
 			e.printStackTrace();
 			modelo.getTareas().clear();
 		}
+	}
+
+	private void ordenarTareas(ArrayList<Tarea> tareas) {
+		ArrayList<Tarea> ordenadas = new ArrayList<>();
+		ArrayList<Tarea> auxiliar = new ArrayList<>();
+		ArrayList<Tarea> actuales = new ArrayList<>();
+		ArrayList<Tarea> aux = new ArrayList<>();
+		
+		while(!tareas.isEmpty()) {
+			boolean precedenciasOk;
+			actuales.addAll(tareas);
+			for (Tarea tarea : actuales) {
+				if (ordenadas.contains(tarea)) continue;
+				precedenciasOk = true;
+				for (String precedencia : tarea.getPrecedencias().split(",")) {
+					if (precedencia.isEmpty()) continue;
+					if (!ordenadas.stream().anyMatch(t -> t.getId().equals(precedencia))) {
+						precedenciasOk = false;
+						auxiliar.add(tarea);
+						break;
+					}
+				}
+				if (precedenciasOk) {
+					ordenadas.add(tarea);
+					tareas.remove(tarea);
+				}
+			}
+			aux.addAll(auxiliar);
+			for (Tarea tarea : aux) { 
+				precedenciasOk = true;
+				for (String precedencia : tarea.getPrecedencias().split(",")) {
+					if (precedencia.isEmpty()) continue;
+					if (!ordenadas.stream().anyMatch(t -> t.getId().equals(precedencia))) {
+						precedenciasOk = false;
+						break;
+					}
+				}
+				if (precedenciasOk) {
+					ordenadas.add(tarea);
+					tareas.remove(tarea);
+				}
+			}
+			aux.clear();
+			actuales.clear();
+			auxiliar.clear();
+		}
+		
+		tareas.addAll(ordenadas);
 	}
 
 	public void start(Stage primaryStage) throws IOException {
@@ -231,9 +286,9 @@ public class CPMController {
 
 	public void generarEsquema() {
 		modelo.generarNodoFinal();
-		modelo.calcularFechas();
-		modelo.calcularMargenes();
-		modelo.calcularIntervalosDeFlotamiento();
+//		modelo.calcularFechas();
+//		modelo.calcularMargenes();
+//		modelo.calcularIntervalosDeFlotamiento();
 		@SuppressWarnings("unchecked")
 		ArrayList<NodoDibujable>[] posiciones = new ArrayList[modelo.getTareas().size()+1];
 		for (int i=0;i<posiciones.length;i++) {
